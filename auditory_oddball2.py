@@ -22,14 +22,19 @@ while any(np.diff(idx_odd) <= 1) or idx_odd[0] < 4:
 trials[np.array(idx_odd)] = 1
 
 isi_list = np.random.uniform(2.0, 3.0, n_trials)
-
+timer = core.Clock()
+start = timer.getTime()
 core.wait(2)
 for trial, isi in zip(trials, isi_list):
     if trial == 0:
         standard.play()
-        print(0)
+        #print(0)
     else:
         target.play()
-        print(1)
+        #print(1)
+    print(timer.getTime())
+    print(isi)
     core.wait(isi)
 core.wait(2)
+end = timer.getTime()
+print(end-start)
