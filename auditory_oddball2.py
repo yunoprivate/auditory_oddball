@@ -28,12 +28,10 @@ core.wait(2)
 for trial, isi in zip(trials, isi_list):
     if trial == 0:
         standard.play()
-        #print(0)
+        print(0)
     else:
         target.play()
-        #print(1)
-    print(timer.getTime())
-    print(isi)
+        print(1)
     core.wait(isi)
 core.wait(2)
 end = timer.getTime()
