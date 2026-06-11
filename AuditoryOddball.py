@@ -36,7 +36,8 @@ class AuditoryOddball:
         #self.ttl = self.config['ttl']
 
     def run(self):
-        '''run auditory oddball paradigm
+        '''
+        run auditory oddball paradigm
         '''
         onset = ptb.GetSecs() + 1.0
 
