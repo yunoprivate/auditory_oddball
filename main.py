@@ -3,56 +3,66 @@ from psychopy import prefs
 # Select PTB
 prefs.hardware['audioLib'] = ['ptb']
 from psychopy import visual, core, event
-from arduino import TTLSender, find_arduino
+from arduino import DummyTTL, TTLSender, create_ttl
 from AuditoryOddball import AuditoryOddball
 
-win = visual.Window(
-    size=(1280, 720),
-    color='black',
-    units='height',
-)
-fixation = visual.TextStim(
-    win,
-    text='+',
-    height=0.08,
-)
-qr = visual.ImageStim(
-    win,
-    image='qrcode/tdms.png'
-)
-instruction = visual.TextStim(
-    win,
-    text='press SPACE to start',
-    height=0.04,
-)
+def ask_int(prompt: str, default: int) -> int:
+    text = input(f'{prompt} [{default}]: ').strip()
+    return default if text == '' else int(text)
 
-port = find_arduino()
-ttl = None
-if(port):
-    ttl = TTLSender(port)
+def ask_float(prompt: str, default: float) -> float:
+    text = input(f'{prompt} [{default}]: ').strip()
+    return default if text == '' else float(text)
 
-freqs = {
-    'standard': 1000.0,
-    'target': 2000.0
-}
-config = {
-    'n_trials': 200,
-    'ratio_oddball': 0.2,
-    'ttl': ttl
-}
+def main():
+    print('=== Auditory Oddball Settings ===')
 
-trial = AuditoryOddball(freqs, config)
-qr.draw()
-win.flip()
-core.wait(2)
-instruction.draw()
-win.flip()
-event.waitKeys(keyList=['space'])
+    n_trials = ask_int('Number of trials', 200)
+    ratio_oddball = ask_float('Oddball ratio', 0.2)
+    freq_standard = ask_float('Standard frequency (Hz)', 1000.0)
+    freq_target = ask_float('Target frequency (Hz)', 2000.0)
+    ttl = create_ttl()
 
-fixation.draw()
-win.flip()
+    trial = AuditoryOddball(
+        n_trials=n_trials,
+        ratio_oddball=ratio_oddball,
+        freq_standard=freq_standard,
+        freq_target=freq_target,
+        ttl=ttl,
+    )
 
-trial.run()
+    win = visual.Window(
+        fullscr=True,
+        color='black',
+        units='height',
+    )
+    qr = visual.ImageStim(
+        win,
+        image='qrcode/tdms.png',
+    )
+    instraction = visual.TextStim(
+        win,
+        text='press SPACE to start',
+        pos=(0,-0.3),
+        height=0.04,
+    )
+    fixation = visual.TextStim(
+        win,
+        text='+',
+        height=0.08,
+    )
 
-if(ttl):
+    qr.draw()
+    instraction.draw()
+    win.flip()
+    event.waitKeys(keyList=['space'])
+
+    fixation.draw()
+    win.flip()
+
+    trial.run()
+    
     ttl.close()
+
+if __name__ == '__main__':
+    main()

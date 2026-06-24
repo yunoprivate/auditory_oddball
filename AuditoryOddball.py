@@ -2,25 +2,35 @@
 import psychtoolbox as ptb
 import numpy as np
 from utils import generate_trials, generate_isis
-#from arduino import TTLSender
+from arduino import DummyTTL, TTLSender
 from audio import fetch_sound
 
 class AuditoryOddball:
-    def __init__(self, freqs: dict, config: dict):
-        self.freqs = freqs
-        self.config = config
+    def __init__(
+            self,
+            ttl: TTLSender | DummyTTL,
+            n_trials=200,
+            ratio_oddball=0.2,
+            freq_standard=1000.0, 
+            freq_target=2000.0,
+        ):
+        self.ttl = ttl
+        self.standard = freq_standard
+        self.target = freq_target
+        self.n_trials = n_trials
+        self.ratio = ratio_oddball
         self.__prep()
 
     def __prep(self):
-        standard = fetch_sound(self.freqs['standard'])
-        target = fetch_sound(self.freqs['target'])
+        standard = fetch_sound(self.standard)
+        target = fetch_sound(self.target)
         
         self.trials = generate_trials(
-            self.config['n_trials'],
-            self.config['ratio_oddball']
+            self.n_trials,
+            self.ratio
         )
 
-        self.isis = generate_isis(self.config['n_trials'])
+        self.isis = generate_isis(self.n_trials)
 
         self.trial_info = {
             0: {
@@ -32,8 +42,6 @@ class AuditoryOddball:
                 'ttl': 2
             }
         }
-
-        self.ttl = self.config['ttl']
 
     def run(self):
         '''
@@ -47,7 +55,7 @@ class AuditoryOddball:
             while ptb.GetSecs() < onset:
                 pass
 
-            #self.ttl.send(info['ttl'])
+            self.ttl.send(info['ttl'])
             info['stim'].play()
 
             onset += isi
