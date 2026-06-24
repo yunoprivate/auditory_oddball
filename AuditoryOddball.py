@@ -25,19 +25,19 @@ class AuditoryOddball:
         self.trial_info = {
             0: {
                 'stim': standard,
-                'ttl': b'1'
+                'ttl': 1
             },
             1: {
                 'stim': target,
-                'ttl': b'2'
+                'ttl': 2
             }
         }
 
-        #self.ttl = self.config['ttl']
+        self.ttl = self.config['ttl']
 
     def run(self):
         '''
-        run auditory oddball paradigm
+        run auditory oddball task
         '''
         onset = ptb.GetSecs() + 1.0
 

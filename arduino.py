@@ -14,5 +14,21 @@ class TTLSender:
     def __init__(self, port: str, baudrate=115200):
         self.serial = serial.Serial(port, baudrate)
 
-    def send(self, code: int):
-        self.serial.write(bytes([code]))
+    def send(self, code: bytes):
+        self.serial.write(code)
+
+    def close(self):
+        self.serial.close()
+
+if __name__ == '__main__':
+    import time
+    port = find_arduino()
+    if(not port):
+        exit(1)
+    ttl = TTLSender(port)
+    time.sleep(2)
+    ttl.send(b'1')
+    time.sleep(2)
+    ttl.send(b'2')
+
+    ttl.close()
