@@ -23,9 +23,13 @@ def create_sound(path: Path, freq: float, duration=50.0, fade=5.0, fs=48000):
     # Apply fade
     sound *= envelope
     
+    # Write
     wavfile.write(path, fs, sound.astype(np.float32))
 
 def fetch_sound(freq, duration=50.0, fade=5.0) -> sound.Sound:
+    '''Fetch required sound
+    If not exits, create
+    '''
     sound_dir = Path('sound')
     sound_dir.mkdir(exist_ok=True)
 

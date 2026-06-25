@@ -1,6 +1,7 @@
 # AuditoryOddball.py
+from psychopy.hardware import keyboard
+from psychopy import core
 import psychtoolbox as ptb
-import numpy as np
 from utils import generate_trials, generate_isis
 from arduino import DummyTTL, TTLSender
 from audio import fetch_sound
@@ -46,16 +47,51 @@ class AuditoryOddball:
     def run(self):
         '''
         run auditory oddball task
+        return log
         '''
-        onset = ptb.GetSecs() + 1.0
+        kb = keyboard.Keyboard()
 
-        for trial, isi in zip(self.trials, self.isis):
+        ptb_clock = ptb.GetSecs() + 1.0
+
+        logs = []
+        log_clock = core.Clock()
+        log_clock.reset()
+
+        for i, (trial, isi) in enumerate(zip(self.trials, self.isis)):
             info = self.trial_info[trial]
 
-            while ptb.GetSecs() < onset:
-                pass
-
+            kb.clearEvents()
+            response_time = None
+            responded = False
+            
+            ttl_time = log_clock.getTime()
             self.ttl.send(info['ttl'])
+
+            play_time = log_clock.getTime()
             info['stim'].play()
 
-            onset += isi
+            next_onset = ptb_clock + isi
+
+            while ptb.GetSecs() < next_onset:
+                keys = kb.getKeys(['space', 'escape'], waitRelease=False)
+
+                for key in keys:
+                    if key.name == 'escape':
+                        return logs
+                    if key.name == 'space' and not responded:
+                        response_time = log_clock.getTime()
+                        responded = True
+                        break
+
+            logs.append({
+                'trial_index': i,
+                'trial_type': int(trial),
+                'ttl_sent_time': ttl_time,
+                'stim_played_time': play_time,
+                'response_time': response_time,
+                'responded': responded,
+            })
+
+            ptb_clock = next_onset
+
+        return logs

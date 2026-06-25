@@ -1,14 +1,6 @@
 # arduino.py
 import serial.tools.list_ports
 
-def find_arduino():
-    for port in serial.tools.list_ports.comports():
-        if 'Arduino' in port.description or 'CH340' in port.description:
-            return port.device
-    
-    print('Arduino not found')
-    return None
-
 class DummyTTL:
     def send(self, code: bytes):
         print(f'[DummyTTL] send: {code}')
@@ -25,6 +17,13 @@ class TTLSender:
 
     def close(self):
         self.serial.close()
+
+def find_arduino():
+    for port in serial.tools.list_ports.comports():
+        if 'Arduino' in port.description or 'CH340' in port.description:
+            return port.device
+        
+    return None
 
 def create_ttl():
     port = find_arduino()

@@ -1,10 +1,13 @@
 # main.py
 from psychopy import prefs
 # Select PTB
-prefs.hardware['audioLib'] = ['ptb']
+prefs.hardware['audioLib'] = ['ptb'] # type: ignore
 from psychopy import visual, core, event
 from arduino import DummyTTL, TTLSender, create_ttl
 from AuditoryOddball import AuditoryOddball
+
+import csv
+from pathlib import Path
 
 def ask_int(prompt: str, default: int) -> int:
     text = input(f'{prompt} [{default}]: ').strip()
@@ -60,7 +63,16 @@ def main():
     fixation.draw()
     win.flip()
 
-    trial.run()
+    logs = trial.run()
+    print(logs)
+
+    Path("data").mkdir(exist_ok=True)
+
+    if(logs):
+        with open('data/oddball_log.csv', 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=logs[0].keys())
+            writer.writeheader()
+            writer.writerows(logs)
     
     ttl.close()
 
