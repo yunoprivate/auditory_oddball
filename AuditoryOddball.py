@@ -36,11 +36,11 @@ class AuditoryOddball:
         self.trial_info = {
             0: {
                 'stim': standard,
-                'ttl': 1
+                'ttl': b'1'
             },
             1: {
                 'stim': target,
-                'ttl': 2
+                'ttl': b'2'
             }
         }
 
