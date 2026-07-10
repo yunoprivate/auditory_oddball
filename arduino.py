@@ -37,10 +37,13 @@ def create_ttl():
 
 if __name__ == '__main__':
     import time
+    print('create_ttl() test')
     ttl = create_ttl()
     time.sleep(2)
+    print('send TTL 1')
     ttl.send(b'1')
     time.sleep(2)
+    print('send TTL 2')
     ttl.send(b'2')
 
     ttl.close()
