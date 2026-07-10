@@ -5,4 +5,4 @@ print('=== Audio Output Devices ===')
 
 for device in devices:
     if device['NrOutputChannels'] > 0:
-        print(f"{device['DeviceName']} ({device['DeviceID']})")
+        print(f"{device['DeviceName']}")
