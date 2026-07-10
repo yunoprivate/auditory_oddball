@@ -39,7 +39,7 @@ def main():
     screen_id = 1 if len(screens) > 1 else 0
 
     win = visual.Window(
-        fullscr=True,
+        #fullscr=True,
         screen=screen_id,
         color='black',
         units='height',

@@ -65,8 +65,9 @@ class AuditoryOddball:
             responded = False
             
             ttl_time = log_clock.getTime()
-            print(info['ttl'])
+            
             print('before ttl')
+            print(info['ttl'])
             self.ttl.send(info['ttl'])
             print('after ttl')
 
