@@ -1,4 +1,4 @@
-import psychotoolbox.audio as audio
+import psychtoolbox.audio as audio
 devices = audio.get_devices()
 
 print('=== Audio Output Devices ===')
