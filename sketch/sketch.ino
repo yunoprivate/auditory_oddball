@@ -13,7 +13,7 @@ void setup() {
 
 void pulse(int pin) {
   digitalWrite(pin, HIGH);
-  delayMicroseconds(5000);
+  delayMicroseconds(100000);
   digitalWrite(pin, LOW);
 }
 

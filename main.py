@@ -3,6 +3,7 @@ from psychopy import prefs
 # Select PTB
 prefs.hardware['audioLib'] = ['ptb'] # type: ignore
 from psychopy import visual, core, event
+from pyglet.canvas import get_display
 from arduino import DummyTTL, TTLSender, create_ttl
 from AuditoryOddball import AuditoryOddball
 
@@ -34,8 +35,12 @@ def main():
         ttl=ttl,
     )
 
+    screens = get_display().get_screens()
+    screen_id = 1 if len(screens) > 1 else 0
+
     win = visual.Window(
         fullscr=True,
+        screen=screen_id,
         color='black',
         units='height',
     )
@@ -64,7 +69,7 @@ def main():
     win.flip()
 
     logs = trial.run()
-    print(logs)
+    #print(logs)
 
     Path("data").mkdir(exist_ok=True)
 

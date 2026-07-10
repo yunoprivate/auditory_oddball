@@ -36,11 +36,11 @@ class AuditoryOddball:
         self.trial_info = {
             0: {
                 'stim': standard,
-                'ttl': 1
+                'ttl': b'1'
             },
             1: {
                 'stim': target,
-                'ttl': 2
+                'ttl': b'2'
             }
         }
 
@@ -65,6 +65,7 @@ class AuditoryOddball:
             responded = False
             
             ttl_time = log_clock.getTime()
+            print(info['ttl'])
             self.ttl.send(info['ttl'])
 
             play_time = log_clock.getTime()
@@ -82,6 +83,8 @@ class AuditoryOddball:
                         response_time = log_clock.getTime()
                         responded = True
                         break
+
+                core.wait(0.001)
 
             logs.append({
                 'trial_index': i,
