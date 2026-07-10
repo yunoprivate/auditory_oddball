@@ -66,10 +66,14 @@ class AuditoryOddball:
             
             ttl_time = log_clock.getTime()
             print(info['ttl'])
+            print('before ttl')
             self.ttl.send(info['ttl'])
+            print('after ttl')
 
             play_time = log_clock.getTime()
+            print('before play')
             info['stim'].play()
+            print('after play')
 
             next_onset = ptb_clock + isi
 
