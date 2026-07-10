@@ -9,6 +9,7 @@ void setup() {
   digitalWrite(targetPin, LOW);
 
   Serial.begin(115200);
+  Serial.write(0xFF); // ready
 }
 
 void pulse(int pin) {
