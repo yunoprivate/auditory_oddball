@@ -26,8 +26,14 @@ def generate_isis(n_trials=200, min=2.0, max=3.0) -> np.ndarray:
 
 # test
 if __name__ == "__main__":
-    trials = generate_trials(100, 0.2)
+    trials = generate_trials(200, 0.2)
     print(trials)
-    isis = generate_isis(100, 2.0, 3.0)
+    isis = generate_isis(200, 2.0, 3.0)
     print(isis)
     print(isis.sum())
+
+    total = 0
+    for i in range(10):
+        total += generate_isis().sum()
+
+    print(total/10)
