@@ -40,6 +40,7 @@ if __name__ == '__main__':
     print('create_ttl() test')
     ttl = create_ttl()
     time.sleep(2)
+    time.sleep(2)
     print('send TTL 1')
     ttl.send(b'1')
     time.sleep(2)
