@@ -42,7 +42,7 @@ def create_ttl():
         print('Arduino not found. Using DummyTTL.')
         return DummyTTL()
 
-def connect_arduino():
+def connect_arduino() -> TTLSender | DummyTTL:
     ports = [
         port
         for port in serial.tools.list_ports.comports()
@@ -66,10 +66,31 @@ def connect_arduino():
         except ValueError:
             print('Please enter an integer.')
     
+    arduino = serial.Serial(
+        ports[idx].device,
+        115200,
+        write_timeout=0.1,
+    )
+
+    start = time.time()
+    response = False
+
+    while time.time() - start < 100.0:
+        data = arduino.read(1)
+        if data == b'\xff':
+            print("responded")
+            response = True
+            break
+    
+    if not response:
+        print("not responded")
+        exit(1)
+    
     return TTLSender(ports[idx].device)
         
 if __name__ == '__main__':
     import time
+    
     print('create_ttl() test')
     ttl = create_ttl()
     time.sleep(2)
@@ -81,3 +102,7 @@ if __name__ == '__main__':
     ttl.send(b'2')
 
     ttl.close()
+
+    print("connect_arduino() test")
+    arduino = connect_arduino()
+    arduino.close()
