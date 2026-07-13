@@ -3,6 +3,13 @@ import serial
 import serial.tools.list_ports
 import time
 
+class ArduinoHandlerBase:
+    def send(self):
+        pass
+
+    def close(self):
+        pass
+
 class DummyTTL:
     ''''''
     def send(self, code: bytes):
@@ -42,7 +49,7 @@ def create_ttl():
         print('Arduino not found. Using DummyTTL.')
         return DummyTTL()
 
-def connect_arduino() -> TTLSender | DummyTTL:
+def connect_arduino() -> TTLSender | DummyTTL | serial.Serial:
     ports = [
         port
         for port in serial.tools.list_ports.comports()
@@ -55,7 +62,7 @@ def connect_arduino() -> TTLSender | DummyTTL:
     
     print('Available Arduinos:')
     for i, port in enumerate(ports):
-        print(f"[{i}] {port.device} - {port.description}")
+        print(f"{i} {port.device} - {port.description}")
 
     while True:
         try:
@@ -86,7 +93,7 @@ def connect_arduino() -> TTLSender | DummyTTL:
         print("not responded")
         exit(1)
     
-    return TTLSender(ports[idx].device)
+    return arduino
         
 if __name__ == '__main__':
     import time
