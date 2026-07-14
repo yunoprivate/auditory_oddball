@@ -2,6 +2,7 @@
 from psychopy import prefs
 # Select PTB
 prefs.hardware['audioLib'] = ['ptb'] # type: ignore
+#prefs.hardware['audioDevice'] = 'スピーカー (High Definition Audio Device)' # type: ignore
 from psychopy import visual, core, event
 from pyglet.canvas import get_display
 from arduino import connect_arduino
@@ -25,6 +26,7 @@ def main():
     ratio_oddball = ask_float('Oddball ratio', 0.2)
     freq_standard = ask_float('Standard frequency (Hz)', 1000.0)
     freq_target = ask_float('Target frequency (Hz)', 2000.0)
+    
     ttl = connect_arduino()
 
     trial = AuditoryOddball(

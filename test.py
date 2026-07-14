@@ -34,7 +34,7 @@ while True:
     except ValueError:
         print('Please enter an integer.')
 from psychopy import prefs
-prefs.hardware['audioDevice'] = devices[idx]["name"]
+prefs.hardware['audioDevice'] = devices[idx]["name"] # type: ignore
 
 from psychopy.hardware.speaker import SpeakerDevice
 temp = SpeakerDevice()
