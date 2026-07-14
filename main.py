@@ -4,7 +4,7 @@ from psychopy import prefs
 prefs.hardware['audioLib'] = ['ptb'] # type: ignore
 from psychopy import visual, core, event
 from pyglet.canvas import get_display
-from arduino import DummyTTL, TTLSender, create_ttl
+from arduino import connect_arduino
 from AuditoryOddball import AuditoryOddball
 
 import csv
@@ -25,7 +25,7 @@ def main():
     ratio_oddball = ask_float('Oddball ratio', 0.2)
     freq_standard = ask_float('Standard frequency (Hz)', 1000.0)
     freq_target = ask_float('Target frequency (Hz)', 2000.0)
-    ttl = create_ttl()
+    ttl = connect_arduino()
 
     trial = AuditoryOddball(
         n_trials=n_trials,

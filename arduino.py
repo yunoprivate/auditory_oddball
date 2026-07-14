@@ -4,30 +4,47 @@ import serial.tools.list_ports
 import time
 
 class ArduinoHandlerBase:
-    def send(self):
+    def wait_ready(self, timeout=5.0):
         pass
 
-    def close(self):
-        pass
-
-class DummyTTL:
-    ''''''
     def send(self, code: bytes):
-        print(f'[DummyTTL] send: {code}')
-    
+        print(f'TTL send: {code}')
+
     def close(self):
         pass
 
-class TTLSender:
+class DummyTTL(ArduinoHandlerBase):
+    def send(self, code: bytes):
+        print(f'[Dummy] ', end='')
+        super().send(code)
+
+class TTLSender(ArduinoHandlerBase):
     def __init__(self, port: str, baudrate=115200):
         self.serial = serial.Serial(
             port,
             baudrate,
             write_timeout=0.1,
+            timeout=0.1,
         )
+
+    def wait_ready(self, timeout=5.0):
+        start = time.time()
+
+        while time.time() - start < timeout:
+            data = self.serial.read(1)
+            print(data)
+
+            if data == b'\xff':
+                print('Arduino is ready.')
+                return
+            
+        print('Arduino is not ready.')
+        raise TimeoutError('Arduino is not ready')
 
     def send(self, code: bytes):
         self.serial.write(code)
+        print(f'[Arduino] ', end='')
+        super().send(code)
 
     def close(self):
         self.serial.close()
@@ -49,7 +66,7 @@ def create_ttl():
         print('Arduino not found. Using DummyTTL.')
         return DummyTTL()
 
-def connect_arduino() -> TTLSender | DummyTTL | serial.Serial:
+def connect_arduino() -> TTLSender | DummyTTL:
     ports = [
         port
         for port in serial.tools.list_ports.comports()
@@ -73,43 +90,21 @@ def connect_arduino() -> TTLSender | DummyTTL | serial.Serial:
         except ValueError:
             print('Please enter an integer.')
     
-    arduino = serial.Serial(
-        ports[idx].device,
-        115200,
-        write_timeout=0.1,
-    )
-
-    start = time.time()
-    response = False
-
-    while time.time() - start < 100.0:
-        data = arduino.read(1)
-        if data == b'\xff':
-            print("responded")
-            response = True
-            break
-    
-    if not response:
-        print("not responded")
-        exit(1)
+    arduino = TTLSender(ports[idx].device)
+    arduino.wait_ready()
     
     return arduino
         
 if __name__ == '__main__':
-    import time
-    
-    print('create_ttl() test')
-    ttl = create_ttl()
-    time.sleep(2)
-    time.sleep(2)
-    print('send TTL 1')
-    ttl.send(b'1')
-    time.sleep(2)
-    print('send TTL 2')
-    ttl.send(b'2')
-
-    ttl.close()
-
     print("connect_arduino() test")
     arduino = connect_arduino()
+
+    print('Sending TTL 1')
+    arduino.send(b'\x01')
+    time.sleep(1)
+
+    print('Sending TTL 2')
+    arduino.send(b'\x02')
+    time.sleep(1)
+
     arduino.close()
