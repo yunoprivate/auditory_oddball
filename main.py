@@ -1,11 +1,21 @@
 # main.py
 from psychopy import prefs
-# Select PTB
+import psychtoolbox.audio as audio
+
+# Set PTB
 prefs.hardware['audioLib'] = ['ptb'] # type: ignore
-#prefs.hardware['audioDevice'] = 'スピーカー (High Definition Audio Device)' # type: ignore
+
+# Set Speaker
+headphone = 'スピーカー (High Definition Audio Device)'
+for dev in audio.get_devices():
+    if (dev['NrOutputChannels'] > 0 
+        and dev['HostAudioAPIName'] == 'Windows WASAPI' 
+        and headphone in dev['DeviceName']):
+        prefs.hardware['audioDevice'] = headphone # type: ignore
+
 from psychopy import visual, core, event
 from pyglet.canvas import get_display
-from arduino import connect_arduino
+from arduino import DummyTTL, connect_arduino
 from AuditoryOddball import AuditoryOddball
 
 import csv
@@ -27,14 +37,28 @@ def main():
     freq_standard = ask_float('Standard frequency (Hz)', 1000.0)
     freq_target = ask_float('Target frequency (Hz)', 2000.0)
     
-    ttl = connect_arduino()
+    arduino = connect_arduino()
 
-    trial = AuditoryOddball(
+    test = AuditoryOddball(
+        n_trials=10,
+        ratio_oddball=0.2,
+        freq_standard=freq_standard,
+        freq_target=freq_target,
+        arduino=DummyTTL()
+    )
+    trial1 = AuditoryOddball(
         n_trials=n_trials,
         ratio_oddball=ratio_oddball,
         freq_standard=freq_standard,
         freq_target=freq_target,
-        ttl=ttl,
+        arduino=arduino,
+    )
+    trial2 = AuditoryOddball(
+        n_trials=n_trials,
+        ratio_oddball=ratio_oddball,
+        freq_standard=freq_standard,
+        freq_target=freq_target,
+        arduino=arduino,
     )
 
     screens = get_display().get_screens()
@@ -46,10 +70,12 @@ def main():
         color='black',
         units='height',
     )
+    """
     qr = visual.ImageStim(
         win,
         image='qrcode/tdms.png',
     )
+    """
     instraction = visual.TextStim(
         win,
         text='press SPACE to start',
@@ -62,7 +88,9 @@ def main():
         height=0.08,
     )
 
-    qr.draw()
+    logs = []
+
+    #qr.draw()
     instraction.draw()
     win.flip()
     event.waitKeys(keyList=['space'])
@@ -70,8 +98,25 @@ def main():
     fixation.draw()
     win.flip()
 
-    logs = trial.run()
-    #print(logs)
+    test.run()
+    
+    instraction.draw()
+    win.flip()
+    event.waitKeys(keyList=['space'])
+
+    fixation.draw()
+    win.flip()
+
+    logs = trial1.run()
+
+    instraction.draw()
+    win.flip()
+    event.waitKeys(keyList=['space'])
+
+    fixation.draw()
+    win.flip()
+
+    logs = trial2.run()    
 
     Path("data").mkdir(exist_ok=True)
 
@@ -81,7 +126,7 @@ def main():
             writer.writeheader()
             writer.writerows(logs)
     
-    ttl.close()
+    arduino.close()
 
 if __name__ == '__main__':
     main()

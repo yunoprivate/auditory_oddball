@@ -9,13 +9,13 @@ from audio import fetch_sound
 class AuditoryOddball:
     def __init__(
             self,
-            ttl: TTLSender | DummyTTL,
+            arduino: TTLSender | DummyTTL,
             n_trials=200,
             ratio_oddball=0.2,
             freq_standard=1000.0, 
             freq_target=2000.0,
         ):
-        self.ttl = ttl
+        self.arduino = arduino
         self.standard = freq_standard
         self.target = freq_target
         self.n_trials = n_trials
@@ -66,7 +66,7 @@ class AuditoryOddball:
             
             ttl_time = log_clock.getTime()
             
-            self.ttl.send(info['ttl'])
+            self.arduino.send(info['ttl'])
             
             play_time = log_clock.getTime()
             info['stim'].play()

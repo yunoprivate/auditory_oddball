@@ -32,14 +32,14 @@ class TTLSender(ArduinoHandlerBase):
 
         while time.time() - start < timeout:
             data = self.serial.read(1)
-            print(data)
+            #print(data)
 
             if data == b'\xff':
                 print('Arduino is ready.')
                 return
             
         print('Arduino is not ready.')
-        raise TimeoutError('Arduino is not ready')
+        raise TimeoutError('Arduino is not ready.')
 
     def send(self, code: bytes):
         self.serial.write(code)
@@ -77,9 +77,19 @@ def connect_arduino() -> TTLSender | DummyTTL:
         print(f'Arduino not found. Using DummyTTL.')
         return DummyTTL()
     
-    print('Available Arduinos:')
+    print('=== Available Arduinos ===')
+    print(
+        f'{"Index":<6} '
+        f'{"Device":<20} '
+        f'{"Description":<20}'
+    )
+    print('-' * 48)
     for i, port in enumerate(ports):
-        print(f"{i} {port.device} - {port.description}")
+        print(
+            f'{i:<6} '
+            f'{port.device:<20} '
+            f'{port.description:<20}'
+        )
 
     while True:
         try:
