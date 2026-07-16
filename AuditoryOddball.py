@@ -20,9 +20,8 @@ class AuditoryOddball:
         self.target = freq_target
         self.n_trials = n_trials
         self.ratio = ratio_oddball
-        self.__prep()
 
-    def __prep(self):
+    def generate(self):
         standard = fetch_sound(self.standard)
         target = fetch_sound(self.target)
         

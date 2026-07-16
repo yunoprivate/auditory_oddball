@@ -79,7 +79,6 @@ def main():
     instraction = visual.TextStim(
         win,
         text='press SPACE to start',
-        pos=(0,-0.3),
         height=0.04,
     )
     fixation = visual.TextStim(
@@ -98,6 +97,7 @@ def main():
     fixation.draw()
     win.flip()
 
+    test.generate()
     test.run()
     
     instraction.draw()
@@ -107,7 +107,8 @@ def main():
     fixation.draw()
     win.flip()
 
-    logs = trial1.run()
+    trial1.generate()
+    logs.append(trial1.run())
 
     instraction.draw()
     win.flip()
@@ -116,15 +117,17 @@ def main():
     fixation.draw()
     win.flip()
 
-    logs = trial2.run()    
+    trial2.generate()
+    logs.append(trial2.run())    
 
     Path("data").mkdir(exist_ok=True)
 
     if(logs):
-        with open('data/oddball_log.csv', 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=logs[0].keys())
-            writer.writeheader()
-            writer.writerows(logs)
+        for i, log in enumerate(logs):
+            with open(f'data/log_{i}.csv', 'w', newline='', encoding='utf-8') as f:
+                writer = csv.DictWriter(f, fieldnames=log[0].keys())
+                writer.writeheader()
+                writer.writerows(log)
     
     arduino.close()
 
