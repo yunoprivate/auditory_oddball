@@ -6,17 +6,18 @@ import psychtoolbox.audio as audio
 prefs.hardware['audioLib'] = ['ptb'] # type: ignore
 
 # Set Speaker
-headphone = 'スピーカー (High Definition Audio Device)'
+headphone = 'スピーカー'
 for dev in audio.get_devices():
     if (dev['NrOutputChannels'] > 0 
         and dev['HostAudioAPIName'] == 'Windows WASAPI' 
         and headphone in dev['DeviceName']):
-        prefs.hardware['audioDevice'] = headphone # type: ignore
+        prefs.hardware['audioDevice'] = dev['DeviceName'] # type: ignore
 
 from psychopy import visual, core, event
 from pyglet.canvas import get_display
 from arduino import DummyTTL, connect_arduino
 from AuditoryOddball import AuditoryOddball
+from csv_writer import csv_writer
 
 import csv
 from pathlib import Path
@@ -98,7 +99,7 @@ def main():
     win.flip()
 
     test.generate()
-    test.run()
+    logs.append(test.run())
     
     instraction.draw()
     win.flip()
@@ -120,15 +121,8 @@ def main():
     trial2.generate()
     logs.append(trial2.run())    
 
-    Path("data").mkdir(exist_ok=True)
+    csv_writer('data', logs, 'TEST')
 
-    if(logs):
-        for i, log in enumerate(logs):
-            with open(f'data/log_{i}.csv', 'w', newline='', encoding='utf-8') as f:
-                writer = csv.DictWriter(f, fieldnames=log[0].keys())
-                writer.writeheader()
-                writer.writerows(log)
-    
     arduino.close()
 
 if __name__ == '__main__':

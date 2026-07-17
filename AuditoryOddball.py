@@ -48,6 +48,8 @@ class AuditoryOddball:
         run auditory oddball task
         return log
         '''
+        core.wait(1)
+
         kb = keyboard.Keyboard()
 
         ptb_clock = ptb.GetSecs() + 1.0
