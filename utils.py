@@ -2,7 +2,34 @@
 import numpy as np
 import random
 
+def generate_stims(
+        n_stims=200,
+        ratio_oddball=0.2,
+        jitter=1,
+    ) -> np.ndarray:
+    '''Generate stimuli array
+    
+    n_stims: number of stimuli
+    ratio_oddball: ratio of oddball
+    jitter: variation in intervals
+
+    TTI is determined by the ratio of oddball and the valiation in intervals.
+
+    TTI = (1 / ratio_oddball) ± jitter
+    '''
+    if not 0 < ratio_oddball < 1:
+        raise ValueError('ratio_oddball must be between 0 and 1')
+    
+    n_targets = round(n_stims * ratio_oddball)
+    tti_mean = round(1 / ratio_oddball)
+
+    stims = np.zeros(n_stims, dtype=int)
+
+    # ensure 
+
 def generate_trials(n_trials=200 , ratio_oddball=0.2) -> np.ndarray:
+    '''Generate stimuli array with random ISI
+    '''
     trials = np.zeros(n_trials, dtype=int)
     
     # randomize oddball positions
