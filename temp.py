@@ -12,7 +12,8 @@ for dev in psychtoolbox.audio.get_devices():
         prefs.hardware['audioDevice'] = headphone # type: ignore
 
 from psychopy import visual, core, event
-from arduino import DummyTTL, connect_arduino
+
+from arduino import connect_arduino
 from AuditoryOddball import AuditoryOddball
 
 def ask_int(prompt: str, default: int) -> int:

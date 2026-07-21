@@ -2,9 +2,10 @@
 from psychopy.hardware import keyboard
 from psychopy import core
 import psychtoolbox as ptb
-from utils import generate_trials, generate_isis
+
 from arduino import DummyTTL, TTLSender
 from audio import fetch_sound
+from utils import generate_stims, generate_isis
 
 class AuditoryOddball:
     def __init__(
@@ -18,19 +19,19 @@ class AuditoryOddball:
         self.arduino = arduino
         self.standard = freq_standard
         self.target = freq_target
-        self.n_trials = n_trials
+        self.n_stims = n_trials
         self.ratio = ratio_oddball
 
     def generate(self):
         standard = fetch_sound(self.standard)
         target = fetch_sound(self.target)
         
-        self.trials = generate_trials(
-            self.n_trials,
+        self.trials = generate_stims(
+            self.n_stims,
             self.ratio
         )
 
-        self.isis = generate_isis(self.n_trials)
+        self.isis = generate_isis(self.n_stims)
 
         self.trial_info = {
             0: {
@@ -67,7 +68,7 @@ class AuditoryOddball:
             
             ttl_time = log_clock.getTime()
             
-            self.arduino.send(info['ttl'])
+            self.arduino.send(i, info['ttl'])
             
             play_time = log_clock.getTime()
             info['stim'].play()

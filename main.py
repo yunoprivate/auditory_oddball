@@ -45,7 +45,7 @@ def main():
         ratio_oddball=0.2,
         freq_standard=freq_standard,
         freq_target=freq_target,
-        arduino=DummyTTL()
+        arduino=arduino,
     )
     trial1 = AuditoryOddball(
         n_trials=n_trials,
