@@ -31,14 +31,14 @@ def ask_float(prompt: str, default: float) -> float:
     return value
 
 def main():
+    arduino = connect_arduino()
+    
     print('=== Auditory Oddball Settings ===')
 
     n_trials = ask_int('Number of trials', 200)
     ratio_oddball = ask_float('Oddball ratio', 0.2)
     freq_standard = ask_float('Standard frequency (Hz)', 1000.0)
     freq_target = ask_float('Target frequency (Hz)', 2000.0)
-
-    arduino = connect_arduino()
 
     win = visual.Window(
         fullscr=True,
@@ -64,4 +64,18 @@ def main():
 
     logs = []
 
-    
+    test = AuditoryOddball(
+        n_trials=10,
+        ratio_oddball=0.2,
+        freq_standard=freq_standard,
+        freq_target=freq_target,
+        arduino=arduino,
+    )
+    trial = AuditoryOddball(
+        n_trials=n_trials,
+        ratio_oddball=ratio_oddball,
+        freq_standard=freq_standard,
+        freq_target=freq_target,
+        arduino=arduino,
+    )
+

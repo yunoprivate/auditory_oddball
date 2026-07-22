@@ -19,9 +19,6 @@ from arduino import DummyTTL, connect_arduino
 from AuditoryOddball import AuditoryOddball
 from csv_writer import csv_writer
 
-import csv
-from pathlib import Path
-
 def ask_int(prompt: str, default: int) -> int:
     text = input(f'{prompt} [{default}]: ').strip()
     return default if text == '' else int(text)
@@ -89,6 +86,26 @@ def main():
     )
 
     logs = []
+
+    event_list = []
+    event_list.append(test)
+    event_list.append(trial1)
+    event_list.append(trial2)
+
+    for trial in event_list:
+        if type(trial) == AuditoryOddball:
+            instraction.draw()
+            win.flip()
+            trial.generate()
+            event.waitKeys(keyList=['space'])
+
+            fixation.draw()
+            win.flip()
+
+            logs.append(trial.run())
+    
+    csv_writer('data', logs, 'TEST')
+    return
 
     #qr.draw()
     instraction.draw()
