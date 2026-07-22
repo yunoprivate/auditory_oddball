@@ -3,29 +3,37 @@ import numpy as np
 import random
 
 def generate_stims(
-        n_stims=200,
-        ratio_oddball=0.2,
-        jitter=1,
+        n=200,
+        ratio=0.2,
     ) -> np.ndarray:
     '''Generate stimuli array
     
-    n_stims: number of stimuli
-    ratio_oddball: ratio of oddball
-    jitter: variation in intervals
-
-    TTI is determined by the ratio of oddball and the valiation in intervals.
-
-    TTI = (1 / ratio_oddball) ± jitter
-    '''
-    if not 0 < ratio_oddball < 1:
-        raise ValueError('ratio_oddball must be between 0 and 1')
+    n: number of stimuli
+    ratio: ratio of oddball
     
-    n_targets = round(n_stims * ratio_oddball)
-    tti_mean = round(1 / ratio_oddball)
+    TTI is determined by the ratio of oddball.
+    '''
+    if not 0 < ratio < 1:
+        raise ValueError('ratio must be between 0 and 1')
 
-    stims = np.zeros(n_stims, dtype=int)
+    stims = np.zeros(n, dtype=int)
 
-    # ensure 
+    start = 3
+    step = 1 / ratio
+    target = n * ratio
+    n1 = int(target * 0.5)
+    n2 = int((target - n1) / 2)
+    deviations = [0] * n1 + [-1, 1] * n2
+    random.shuffle(deviations)
+    while (np.any(np.abs(np.diff(deviations)) > 1)
+           or deviations[0] == -1
+           or deviations[-1] != deviations[0]):
+        random.shuffle(deviations)
+
+    for i, dev in enumerate(deviations):
+        stims[start + int(i * step) + dev] = 1
+    
+    return stims
 
 def generate_trials(n_trials=200 , ratio_oddball=0.2) -> np.ndarray:
     '''Generate stimuli array with random ISI
@@ -53,14 +61,8 @@ def generate_isis(n_trials=200, min=2.0, max=3.0) -> np.ndarray:
 
 # test
 if __name__ == "__main__":
-    trials = generate_trials(200, 0.2)
-    print(trials)
-    isis = generate_isis(200, 2.0, 3.0)
-    print(isis)
-    print(isis.sum())
-
-    total = 0
-    for i in range(10):
-        total += generate_isis().sum()
-
-    print(total/10)
+    stims = generate_stims()
+    isis = generate_isis()
+    print(stims)
+    print(f'target: {sum(stims)}')
+    print(f'total: {sum(isis)}')
