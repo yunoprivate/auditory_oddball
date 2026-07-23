@@ -102,6 +102,9 @@ def main():
             logs.append(trial.run())
     
     csv_writer('data', logs, 'TEST')
+
+    arduino.close()
+    
     return
 
     #qr.draw()

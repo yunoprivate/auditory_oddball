@@ -67,7 +67,6 @@ class AuditoryOddball:
             responded = False
             
             ttl_time = log_clock.getTime()
-            
             print(f'{i:>3} ', end='')
             self.arduino.send(info['ttl'])
             
@@ -101,3 +100,13 @@ class AuditoryOddball:
             ptb_clock = next_onset
 
         return logs
+    
+if __name__ == '__main__':
+    arduino = DummyTTL()
+    test = AuditoryOddball(
+        arduino=arduino,
+        n_trials=20,
+    )
+
+    test.generate()
+    test.run()

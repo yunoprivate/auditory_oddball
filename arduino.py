@@ -77,6 +77,12 @@ def connect_arduino() -> TTLSender | DummyTTL:
         print(f'Arduino not found. Using DummyTTL.')
         return DummyTTL()
     
+    if len(ports) == 1:
+        print('Arduino was automatically selected.')
+        arduino = TTLSender(ports[0].device)
+        arduino.wait_ready()
+        return arduino
+    
     print('=== Available Arduinos ===')
     print(
         f'{"Index":<6} '
