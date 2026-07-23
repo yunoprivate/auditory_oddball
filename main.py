@@ -87,10 +87,7 @@ def main():
 
     logs = []
 
-    event_list = []
-    event_list.append(test)
-    event_list.append(trial1)
-    event_list.append(trial2)
+    event_list = [test, trial1, trial2]
 
     for trial in event_list:
         if type(trial) == AuditoryOddball:

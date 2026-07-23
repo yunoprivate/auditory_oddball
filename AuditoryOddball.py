@@ -68,7 +68,8 @@ class AuditoryOddball:
             
             ttl_time = log_clock.getTime()
             
-            self.arduino.send(i, info['ttl'])
+            print(f'{i:>3} ', end='')
+            self.arduino.send(info['ttl'])
             
             play_time = log_clock.getTime()
             info['stim'].play()

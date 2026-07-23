@@ -14,8 +14,8 @@ class ArduinoHandlerBase:
         pass
 
 class DummyTTL(ArduinoHandlerBase):
-    def send(self, idx: int, code: bytes):
-        print(f'{idx:>3} [Dummy] ', end='')
+    def send(self, code: bytes):
+        print(f'[Dummy] ', end='')
         super().send(code)
 
 class TTLSender(ArduinoHandlerBase):
@@ -41,9 +41,9 @@ class TTLSender(ArduinoHandlerBase):
         print('Arduino is not ready.')
         raise TimeoutError('Arduino is not ready.')
 
-    def send(self, idx: int, code: bytes):
+    def send(self, code: bytes):
         self.serial.write(code)
-        print(f'{idx:>3} [Arduino] ', end='')
+        print(f'[Arduino] ', end='')
         super().send(code)
 
     def close(self):
