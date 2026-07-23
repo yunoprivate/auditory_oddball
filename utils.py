@@ -32,7 +32,7 @@ def generate_stims(
 
     for i, dev in enumerate(deviations):
         stims[start + int(i * step) + dev] = 1
-    
+
     return stims
 
 def generate_trials(n_trials=200 , ratio_oddball=0.2) -> np.ndarray:
@@ -66,3 +66,9 @@ if __name__ == "__main__":
     print(stims)
     print(f'target: {sum(stims)}')
     print(f'total: {sum(isis)}')
+
+    rare = [i for i, stim in enumerate(stims) if stim == 1]
+    sum = 0
+    for i in range(rare[0], rare[-1]):
+        sum += isis[i]
+    print(sum/39)
